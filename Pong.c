@@ -176,6 +176,8 @@ int main(int argc, const char * argv[]) {
     board[Ball.xPos][Ball.yPos] = Ball.ballSymbol;
     
     bool continueGame = true;
+    
+    bool keepMoving = false;
     //int pointsLeft = 0;
     //int pointsRight = 0;
     
@@ -281,15 +283,15 @@ int main(int argc, const char * argv[]) {
                 continueGame = false;
             }
             
-        } else if (Ball.xPos == 6 && (Ball.yPos == LeftPaddle.yPos || Ball.yPos == LeftPaddle.yPos+1 || Ball.yPos == LeftPaddle.yPos+1) &&  ((dCol == -1 && dRow == 1) || (dCol == -1 && dRow == 0) || (dCol == -1 && dRow == -1))){
-            if(Ball.yPos == LeftPaddle.yPos+1){
+        } else if (Ball.xPos == 6 && (Ball.yPos == LeftPaddle.yPos || Ball.yPos == LeftPaddle.yPos+1 || Ball.yPos == LeftPaddle.yPos+1) &&  ((dCol == -1 && dRow == 1) || (dCol == -1 && dRow == 0) || (dCol == -1 && dRow == -1)) && keepMoving == false){
+            if(Ball.yPos == LeftPaddle.yPos-1){ //bottom corner
                 if(LeftPaddle.previousMove == 1){ //paddle up
                     if (dCol == -1 && dRow == 1){ //ball down diagonal
                         dCol = 1;
                         dRow = 0;
                     } else if (dCol == -1 && dRow == 0){ //ball left
-                        dCol = 1;
-                        dRow = -1;
+                        keepMoving = true;
+                        continue;
                     } else if (dCol == -1 && dRow == -1){ //ball up diagonal
                         dCol = 1;
                         dRow = -1;
@@ -299,8 +301,8 @@ int main(int argc, const char * argv[]) {
                         dCol = 1;
                         dRow = -1;
                     } else if (dCol == -1 && dRow == 0){ //ball left
-                        dCol = 1;
-                        dRow = -1;
+                        keepMoving = true;
+                        continue;
                     } else if (dCol == -1 && dRow == -1){ //ball up diagnial
                         dCol = 1;
                         dRow = -1;
@@ -318,7 +320,7 @@ int main(int argc, const char * argv[]) {
                     } 
                     
                 }
-            } else if (Ball.yPos == LeftPaddle.yPos) {
+            } else if (Ball.yPos == LeftPaddle.yPos) { //directly in the middle
                 
                 if(LeftPaddle.previousMove == 1){ //paddle up
                     if (dCol == -1 && dRow == 1){ //ball down diagonal
@@ -342,7 +344,7 @@ int main(int argc, const char * argv[]) {
                         dCol = 1;
                         dRow = -1;
                     }
-                } else if (LeftPaddle.previousMove == -1){
+                } else if (LeftPaddle.previousMove == 1){
                     if (dCol == -1 && dRow == 1){ //ball down diagonal
                         dCol = 1;
                         dRow = 1;
@@ -356,7 +358,7 @@ int main(int argc, const char * argv[]) {
                     
                 }                
                 
-            } else if (Ball.yPos == LeftPaddle.yPos-1){
+            } else if (Ball.yPos == LeftPaddle.yPos+1){ //top corner
                 
                 if(LeftPaddle.previousMove == 1){ //paddle up
                     if (dCol == -1 && dRow == 1){ //ball down diagonal
@@ -374,8 +376,7 @@ int main(int argc, const char * argv[]) {
                         dCol = 1;
                         dRow = 1;
                     } else if (dCol == -1 && dRow == 0){ //ball left
-                        dCol = 1;
-                        dRow = 1;
+                        continue;
                     } else if (dCol == -1 && dRow == -1){ //ball up diagnial
                         dCol = 1;
                         dRow = 1;
@@ -385,8 +386,7 @@ int main(int argc, const char * argv[]) {
                         dCol = 1;
                         dRow = 1;
                     } else if (dCol == -1 && dRow == 0){ //ball left
-                        dCol = 1;
-                        dRow = 1;
+                        continue;
                     } else if (dCol == -1 && dRow == -1){ //ball up diagnial
                         dCol = 1;
                         dRow = 0;
@@ -396,23 +396,32 @@ int main(int argc, const char * argv[]) {
                 
             }
         
-        } else if (Ball.yPos == LeftPaddle.yPos+1 && Ball.xPos == LeftPaddle.xPos){
-            if(dRow !=0){
-                dCol = -1;
+        } else if (Ball.yPos == LeftPaddle.yPos-1 && Ball.xPos == LeftPaddle.xPos &&  ((dCol == -1 && dRow == 1) || (dCol == -1 && dRow == 0) || (dCol == -1 && dRow == -1)) && keepMoving == false){ //top 
+            
+            if((LeftPaddle.previousMove == 0 || LeftPaddle.previousMove == -1) && dRow == 0){ //unmoving paddles as ball passes over
+                keepMoving = true;
+                continue; //should prevent freezing
+            } else if (LeftPaddle.previousMove == 1 && dRow == 0) {
                 dRow = -1;
-            } else {
-                continue;
-            } 
-        } else if(Ball.yPos == LeftPaddle.yPos-1 && Ball.xPos == LeftPaddle.xPos) {
-            if(dRow !=0){
                 dCol = -1;
-                dRow = 1;
             } else {
+                keepMoving = true;
+                continue;
+            }
+        } else if(Ball.yPos == LeftPaddle.yPos+1 && Ball.xPos == LeftPaddle.xPos &&  ((dCol == -1 && dRow == 1) || (dCol == -1 && dRow == 0) || (dCol == -1 && dRow == -1)) && keepMoving == false) { //bottom
+            if((LeftPaddle.previousMove == 0 || LeftPaddle.previousMove == 1) && dRow == 0){ //unmoving paddles as ball passes under
+                keepMoving = true;
+                continue; //should prevent freezing
+            } else if (LeftPaddle.previousMove == -1 && dRow == 0) {
+                dRow = 1;
+                dCol = -1;
+            } else {
+                keepMoving = true;
                 continue;
             } 
-        } else if (Ball.xPos == wcols-7 && (Ball.yPos == RightPaddle.yPos || Ball.yPos == RightPaddle.yPos+1 || Ball.yPos == RightPaddle.yPos+1) &&  ((dCol == 1 && dRow == 1) || (dCol == 1 && dRow == 0) || (dCol == 1 && dRow == -1))){
+        } else if (Ball.xPos == wcols-7 && (Ball.yPos == RightPaddle.yPos || Ball.yPos == RightPaddle.yPos+1 || Ball.yPos == RightPaddle.yPos+1) &&  ((dCol == 1 && dRow == 1) || (dCol == 1 && dRow == 0) || (dCol == 1 && dRow == -1)) && keepMoving == false){
             if(Ball.yPos == RightPaddle.yPos+1){
-                if (RightPaddle.previousMove == 1){
+                if (RightPaddle.previousMove == 1){ //ball below
                     if (dCol == 1 && dRow == 1){ //ball down diagonal
                         dCol = -1;
                         dRow = 0;
@@ -428,8 +437,8 @@ int main(int argc, const char * argv[]) {
                         dCol = -1;
                         dRow = -1;
                     } else if (dCol == 1 && dRow == 0){ //ball left
-                        dCol = -1;
-                        dRow = -1;
+                        keepMoving = true;
+                        continue;
                     } else if (dCol == 1 && dRow == -1){ //ball up diagnial
                         dCol = -1;
                         dRow = -1;
@@ -482,7 +491,7 @@ int main(int argc, const char * argv[]) {
                     } 
                     
                 }
-            } else if (Ball.yPos == RightPaddle.yPos-1){
+            } else if (Ball.yPos == RightPaddle.yPos-1){ //ball above
                 if(RightPaddle.previousMove == 1){ //paddle up
                     if (dCol == 1 && dRow == 1){ //ball down diagonal
                         dCol = -1;
@@ -498,9 +507,9 @@ int main(int argc, const char * argv[]) {
                     if (dCol == 1 && dRow == 1){ //ball down diagonal
                         dCol = -1;
                         dRow = 1;
-                    } else if (dCol == 1 && dRow == 0){ //ball left
-                        dCol = -1;
-                        dRow = 1;
+                    } else if (dCol == 1 && dRow == 0){ //ball right
+                        dCol = 1;
+                        dRow = 0;
                     } else if (dCol == 1 && dRow == -1){ //ball up diagnial
                         dCol = -1;
                         dRow = 1;
@@ -520,18 +529,26 @@ int main(int argc, const char * argv[]) {
                 }
             }
         
-        } else if (Ball.yPos == RightPaddle.yPos+1 && Ball.xPos == RightPaddle.xPos){
-            if(dRow !=0){
-                dCol = 1;
+        } else if (Ball.yPos == RightPaddle.yPos-1 && Ball.xPos == RightPaddle.xPos &&  ((dCol == 1 && dRow == 1) || (dCol == 1 && dRow == 0) || (dCol == 1 && dRow == -1)) && keepMoving == false){
+            if(RightPaddle.previousMove == 0 && dRow == 0){ //unmoving paddles as ball passes over
+                keepMoving = true;
+                continue; //should prevent freezing
+            } else if (RightPaddle.previousMove == 1 && dRow == 0) {
                 dRow = -1;
+                dCol = 1;
             } else {
+                keepMoving = true;
                 continue;
             } 
-        } else if (Ball.yPos == RightPaddle.yPos-1 && Ball.xPos == RightPaddle.xPos){
-            if(dRow !=0){
-                dCol = 1;
+        } else if (Ball.yPos == RightPaddle.yPos+1 && Ball.xPos == RightPaddle.xPos &&  ((dCol == 1 && dRow == 1) || (dCol == 1 && dRow == 0) || (dCol == 1 && dRow == -1)) && keepMoving == false){
+            if(RightPaddle.previousMove == 0 && dRow == 0){ //unmoving paddles as ball passes under
+                keepMoving = true;
+                continue; //should prevent freezing
+            } else if (RightPaddle.previousMove == -1 && dRow == 0) {
                 dRow = 1;
+                dCol = 1;
             } else {
+                keepMoving = true;
                 continue;
             } 
             
@@ -541,6 +558,7 @@ int main(int argc, const char * argv[]) {
             Ball.yPos+=dRow; //updated positions
             Ball.xPos+=dCol;
             board[Ball.xPos][Ball.yPos] = Ball.ballSymbol;
+            keepMoving = false;
         }
         
             
