@@ -31,6 +31,12 @@ When one will gets 11 points, the game ends and the players are greeted with the
 
 ![](media/ncursesPongEndScreen.png)
 
-# This vs ECE243Pong
+### Controls
+| Player        | UP       | DOWN       |
+| ------------- |----------|------------|
+| L             | W        | S          |
+| R             | Up Arrow | Down Arrow |
 
+
+# This vs ECE243Pong
 So, for our second your computer organization course we were allowed to make a project of our choosing. I chose Pong, because I wanted to attempt to write it with better coding habits and a few extra features. Plus, writing it to work directly with the I/O devices was very interesting. However, this one, despite being more limited, doesn't require the De1-SoC board and doesn't have its speed hampered due to simulations. Plus we aren't allowed to distribute our code due to academic integrity policies. However like I mention on that page, I'd be happy to discuss that project with anyone interested. 
